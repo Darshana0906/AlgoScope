@@ -30,13 +30,13 @@ const data = useMemo(() => generateData(), [])
 return ( <div className="rounded-2xl border border-slate-700/80 bg-slate-900/60 p-4 shadow-xl"> <div className="mb-4"> <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-400/80">
 Complexity Visualization </p>
 
-```
+
     <h3 className="mt-2 text-lg font-semibold text-slate-100">
       Algorithm Performance Comparison
     </h3>
   </div>
 
-  <div className="h-[320px] w-full">
+  <div className="h-[260px] sm:h-[320px] w-full">
     <ResponsiveContainer width="100%" height="100%">
       <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
@@ -64,7 +64,7 @@ Complexity Visualization </p>
     </ResponsiveContainer>
   </div>
 </div>
-```
+
 
 )
 }
