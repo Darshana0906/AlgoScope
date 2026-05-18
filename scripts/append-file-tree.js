@@ -2,52 +2,49 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const semver = require('semver');   // install this: npm install semver
 
-// Get the new tag from the command line argument
-const tag = process.argv[2];
-if (!tag) {
-  console.error('No tag provided');
-  process.exit(1);
-}
-
-// Get all tags sorted by commit date, newest first
-function getAllTagsSorted() {
+// ----------------------- helpers -----------------------
+function getAllTagsSortedByVersionDesc() {
   try {
-    const output = execSync('git tag --sort=-creatordate', { encoding: 'utf8' }).trim();
-    if (!output) return [];
-    return output.split('\n').filter(Boolean);
+    const raw = execSync('git tag', { encoding: 'utf8' }).trim();
+    if (!raw) return [];
+    const tags = raw.split('\n').filter(t => {
+      const v = t.replace(/^v/, '');
+      return semver.valid(v);
+    });
+    // sort descending by semver
+    tags.sort((a, b) => semver.rcompare(a.replace(/^v/, ''), b.replace(/^v/, '')));
+    return tags;
   } catch {
     return [];
   }
 }
 
-// Build a filtered directory tree of files changed between two tags
 function getChangedFilesTree(fromTag, toTag) {
   let changedFiles = [];
   try {
     if (fromTag) {
-      const diffOutput = execSync(`git diff --name-status ${fromTag} ${toTag}`, { encoding: 'utf8' });
-      changedFiles = diffOutput
+      const diff = execSync(`git diff --name-status ${fromTag} ${toTag}`, { encoding: 'utf8' });
+      changedFiles = diff
         .split('\n')
-        .filter(line => line.trim() !== '')
+        .filter(line => line.trim())
         .map(line => {
-          const parts = line.split('\t');
-          return { status: parts[0], file: parts.slice(1).join('\t') };
+          const [status, ...rest] = line.split('\t');
+          return { status, file: rest.join('\t') };
         });
     } else {
-      // First tag: include all files
-      const allFiles = execSync('git ls-tree -r HEAD --name-only', { encoding: 'utf8' })
+      const all = execSync('git ls-tree -r HEAD --name-only', { encoding: 'utf8' })
         .split('\n')
         .filter(Boolean)
         .map(f => ({ status: 'A', file: f }));
-      changedFiles = allFiles;
+      changedFiles = all;
     }
   } catch (e) {
     console.error(`Error getting changed files between ${fromTag} and ${toTag}:`, e.message);
     return '';
   }
 
-  // Build tree object
   function buildTree(fileList) {
     const root = {};
     for (const entry of fileList) {
@@ -56,15 +53,10 @@ function getChangedFilesTree(fromTag, toTag) {
       for (let i = 0; i < parts.length; i++) {
         const part = parts[i];
         if (i === parts.length - 1) {
-          if (!current[part]) {
-            current[part] = { type: 'file', status: entry.status };
-          }
+          if (!current[part]) current[part] = { type: 'file', status: entry.status };
         } else {
-          if (!current[part]) {
-            current[part] = { type: 'directory', children: {} };
-          } else if (current[part].type !== 'directory') {
-            current[part] = { type: 'directory', children: {} };
-          }
+          if (!current[part]) current[part] = { type: 'directory', children: {} };
+          else if (current[part].type !== 'directory') current[part] = { type: 'directory', children: {} };
           current = current[part].children;
         }
       }
@@ -73,29 +65,27 @@ function getChangedFilesTree(fromTag, toTag) {
   }
 
   function renderTree(node, indent = '') {
-    let output = '';
+    let out = '';
     const entries = Object.entries(node).sort((a, b) => {
-      const aIsDir = a[1].type === 'directory';
-      const bIsDir = b[1].type === 'directory';
-      if (aIsDir && !bIsDir) return -1;
-      if (!aIsDir && bIsDir) return 1;
+      const aDir = a[1].type === 'directory';
+      const bDir = b[1].type === 'directory';
+      if (aDir && !bDir) return -1;
+      if (!aDir && bDir) return 1;
       return a[0].localeCompare(b[0]);
     });
-
     for (const [name, info] of entries) {
       if (info.type === 'directory') {
-        output += `${indent}- 📁 **${name}/**\n`;
-        output += renderTree(info.children, indent + '  ');
+        out += `${indent}- 📁 **${name}/**\n`;
+        out += renderTree(info.children, indent + '  ');
       } else {
-        let icon = '';
+        let icon = '• ';
         if (info.status === 'A') icon = '➕ ';
         else if (info.status === 'M') icon = '✏️ ';
         else if (info.status === 'D') icon = '❌ ';
-        else icon = '• ';
-        output += `${indent}- ${icon}${name}\n`;
+        out += `${indent}- ${icon}${name}\n`;
       }
     }
-    return output;
+    return out;
   }
 
   if (changedFiles.length === 0) return '';
@@ -103,74 +93,73 @@ function getChangedFilesTree(fromTag, toTag) {
   return renderTree(tree);
 }
 
-// Parse release-please changelog sections into the old format
-function parseReleasePleaseSections(content) {
-  const sections = {};
-  const lines = content.split('\n');
-  let currentSection = null;
-  let currentEntries = [];
-
-  for (const line of lines) {
-    const headerMatch = line.match(/^### (.+)/);
-    if (headerMatch) {
-      if (currentSection && currentEntries.length > 0) {
-        sections[currentSection] = currentEntries;
-      }
-      currentSection = headerMatch[1].trim();
-      currentEntries = [];
-    } else if (currentSection && line.trim().startsWith('*')) {
-      // Extract the description and prune commit hashes
-      let entry = line.replace(/^\*\s*/, '').trim();
-      // Remove trailing commit reference like ([abc1234](https://...))
-      entry = entry.replace(/\s*\(\[[a-f0-9]+\]\(https:\/\/github\.com\/[^\)]+\)\)\s*$/, '');
-      if (entry) {
-        currentEntries.push(`- ${entry}`);
-      }
+function extractManualEntries(changelogContent) {
+  const manual = {};
+  const regex = /^## \[(\d+\.\d+\.\d+)\](?: - \d{4}-\d{2}-\d{2})?\n+((?:### (?:Added|Changed|Fixed|Removed|Security|Deprecated)\n(?:- .+\n?)+)+)/gm;
+  let match;
+  while ((match = regex.exec(changelogContent)) !== null) {
+    const version = match[1];
+    // don't overwrite an already captured version (first occurrence wins – that's the manual one)
+    if (!manual[version]) {
+      manual[version] = match[0].replace(/^## \[[\d.]+\](?: - \d{4}-\d{2}-\d{2})?\n+/, '').trim();
     }
   }
-
-  if (currentSection && currentEntries.length > 0) {
-    sections[currentSection] = currentEntries;
-  }
-
-  return sections;
+  return manual;
 }
 
-// Map release-please section names to old format names
-function mapSectionToOldFormat(sectionName) {
-  const mapping = {
-    'Features': 'Added',
-    'Bug Fixes': 'Fixed',
-    'Performance Improvements': 'Changed',
-    'Documentation': 'Documentation',
-    'Reverts': 'Reverted',
-    'Miscellaneous': 'Changed'
-  };
-  return mapping[sectionName] || sectionName;
+function generateAutoSection(tag, previousTag) {
+  let gitLog = '';
+  try {
+    const range = previousTag ? `${previousTag}..${tag}` : tag;
+    gitLog = execSync(`git log --pretty=format:"%s" ${range}`, { encoding: 'utf8' }).trim();
+  } catch {
+    return '';
+  }
+  const lines = gitLog.split('\n').filter(Boolean);
+  const cat = { Added: [], Fixed: [], Changed: [] };
+  for (const line of lines) {
+    if (line.match(/^feat(\(.+?\))?:/)) {
+      cat.Added.push(`- ${line.replace(/^feat(\(.+?\))?:\s*/, '')}`);
+    } else if (line.match(/^fix(\(.+?\))?:/)) {
+      cat.Fixed.push(`- ${line.replace(/^fix(\(.+?\))?:\s*/, '')}`);
+    } else if (line.match(/^(perf|refactor)(\(.+?\))?:/)) {
+      cat.Changed.push(`- ${line.replace(/^(perf|refactor)(\(.+?\))?:\s*/, '')}`);
+    }
+  }
+  let output = '';
+  for (const [sec, entries] of Object.entries(cat)) {
+    if (entries.length > 0) {
+      output += `### ${sec}\n\n${entries.join('\n')}\n\n`;
+    }
+  }
+  return output;
 }
 
-// Build the new CHANGELOG.md from scratch
-function rebuildChangelog(allTags, newReleaseVersion) {
-  const changelogPath = path.join(process.cwd(), 'CHANGELOG.md');
-  
-  // Read the old manually maintained entries (everything after the first release-please header)
-  let oldContent = '';
-  if (fs.existsSync(changelogPath)) {
-    oldContent = fs.readFileSync(changelogPath, 'utf8');
-  }
+// ----------------------- main -----------------------
+const tagArg = process.argv[2];
+if (!tagArg) {
+  console.error('Usage: node scripts/append-file-tree.js <tag>');
+  process.exit(1);
+}
+const newTag = tagArg; // e.g. v1.1.0
 
-  // Extract the old manual entries (keep them as-is if they exist)
-  const oldSections = {};
-  const oldVersionRegex = /^## \[(\d+\.\d+\.\d+)\](.*?)(?=^## \[|\Z)/gms;
-  let oldMatch;
-  while ((oldMatch = oldVersionRegex.exec(oldContent)) !== null) {
-    const ver = oldMatch[1];
-    const sectionContent = oldMatch[2].trim();
-    oldSections[ver] = sectionContent;
-  }
+// 1. get all existing tags sorted by semver (newest first)
+const allTags = getAllTagsSortedByVersionDesc();
+console.log('Tags (semver desc):', allTags);
 
-  // Build the new header
-  let changelog = `# Changelog
+// 2. read current CHANGELOG.md (it may contain manual entries we want to keep)
+const changelogPath = path.join(process.cwd(), 'CHANGELOG.md');
+let existingContent = '';
+if (fs.existsSync(changelogPath)) {
+  existingContent = fs.readFileSync(changelogPath, 'utf8');
+}
+
+// 3. extract manual entries (the beautifully formatted ones)
+const manualEntries = extractManualEntries(existingContent);
+console.log('Manual entries found for versions:', Object.keys(manualEntries));
+
+// 4. build new changelog from scratch
+let newChangelog = `# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -179,90 +168,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 `;
 
-  // Process each tag in order (newest first)
-  const tagsToProcess = allTags.slice(0, 5); // Limit to last 5 releases
+for (let i = 0; i < allTags.length; i++) {
+  const tag = allTags[i];
+  const version = tag.replace(/^v/, '');
+  const previousTag = i < allTags.length - 1 ? allTags[i + 1] : null;
 
-  for (let i = 0; i < tagsToProcess.length; i++) {
-    const currentTag = tagsToProcess[i];
-    const version = currentTag.startsWith('v') ? currentTag.slice(1) : currentTag;
-    const previousTag = i < tagsToProcess.length - 1 ? tagsToProcess[i + 1] : null;
-    
-    // Get commit date for this tag
-    let date;
-    try {
-      date = execSync(`git log -1 --format=%as ${currentTag}`, { encoding: 'utf8' }).trim();
-    } catch {
-      date = '2026-05-18'; // fallback
-    }
-
-    changelog += `## [${version}] - ${date}\n\n`;
-
-    // Check if this version exists in the old manual entries
-    if (oldSections[version]) {
-      // Use the old manual format
-      changelog += oldSections[version] + '\n\n';
-    } else {
-      // Generate from git log between tags
-      let gitLogOutput = '';
-      try {
-        if (previousTag) {
-          gitLogOutput = execSync(
-            `git log --pretty=format:"%s" ${previousTag}..${currentTag}`,
-            { encoding: 'utf8' }
-          ).trim();
-        } else {
-          gitLogOutput = execSync(
-            `git log --pretty=format:"%s" ${currentTag}`,
-            { encoding: 'utf8' }
-          ).trim();
-        }
-      } catch (e) {
-        console.error(`Error getting git log for ${currentTag}:`, e.message);
-      }
-
-      const commitLines = gitLogOutput.split('\n').filter(Boolean);
-      const categorized = {
-        'Added': [],
-        'Fixed': [],
-        'Changed': []
-      };
-
-      for (const line of commitLines) {
-        if (line.startsWith('feat:') || line.startsWith('feat(')) {
-          categorized['Added'].push(`- ${line.replace(/^feat(\([^)]+\))?:\s*/, '')}`);
-        } else if (line.startsWith('fix:') || line.startsWith('fix(')) {
-          categorized['Fixed'].push(`- ${line.replace(/^fix(\([^)]+\))?:\s*/, '')}`);
-        } else if (line.startsWith('perf:') || line.startsWith('refactor:')) {
-          categorized['Changed'].push(`- ${line.replace(/^(perf|refactor)(\([^)]+\))?:\s*/, '')}`);
-        }
-      }
-
-      for (const [section, entries] of Object.entries(categorized)) {
-        if (entries.length > 0) {
-          changelog += `### ${section}\n\n`;
-          changelog += entries.join('\n') + '\n\n';
-        }
-      }
-    }
-
-    // Add the file tree for this release
-    const treeMarkdown = getChangedFilesTree(previousTag, currentTag);
-    if (treeMarkdown) {
-      changelog += `### 📂 Changed Files\n\n\`\`\`\n${treeMarkdown}\`\`\`\n\n`;
-    }
+  // get commit date for this tag
+  let date;
+  try {
+    date = execSync(`git log -1 --format=%as ${tag}`, { encoding: 'utf8' }).trim();
+  } catch {
+    date = '2026-05-18'; // fallback
   }
 
-  return changelog;
+  newChangelog += `## [${version}] - ${date}\n\n`;
+
+  if (manualEntries[version]) {
+    // use the beautiful manual entry exactly as is
+    newChangelog += manualEntries[version] + '\n\n';
+  } else {
+    // generate from commit messages
+    newChangelog += generateAutoSection(tag, previousTag);
+  }
+
+  // append file tree for this release
+  const tree = getChangedFilesTree(previousTag, tag);
+  if (tree) {
+    newChangelog += `### 📂 Changed Files\n\n\`\`\`\n${tree}\`\`\`\n\n`;
+  }
 }
 
-// Main execution
-const allTags = getAllTagsSorted();
-console.log('All tags:', allTags);
-
-const newVersion = tag.startsWith('v') ? tag.slice(1) : tag;
-const newChangelog = rebuildChangelog(allTags, newVersion);
-
-// Write the complete new changelog
-const changelogPath = path.join(process.cwd(), 'CHANGELOG.md');
+// 5. overwrite the file completely
 fs.writeFileSync(changelogPath, newChangelog, 'utf8');
-console.log('CHANGELOG.md has been completely rebuilt with proper ordering.');
+console.log('✅ CHANGELOG.md rebuilt successfully with semver ordering.');
