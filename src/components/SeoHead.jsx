@@ -117,9 +117,9 @@ export default function SeoHead() {
         title = 'Linear vs Binary Search Comparison | AlgoScope'
         description = 'Visualize the performance gap between Linear and Binary search. Compare step counts and search patterns on arrays in real-time.'
       } else if (pathname === '/adt') {
-        const formattedType = type ? type.charAt(0).toUpperCase() + type.slice(1) : ''
-        title = `${formattedType} Operations Comparison | AlgoScope`
-        description = `Compare different operations and implementation patterns for ${formattedType} data structures side-by-side.`
+        const formattedType = type ? type.charAt(0).toUpperCase() + type.slice(1) : 'Data Structure'
+        title = `${formattedType} Comparison | AlgoScope`
+        description = `Compare different operations and implementation patterns for ${formattedType === 'Data Structure' ? 'various' : formattedType} data structures side-by-side.`
       }
     } 
     // Algorithm-specific logic (Solo Mode or specific algo)
