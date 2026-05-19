@@ -101,7 +101,7 @@ export const Navbar = () => {
           </Link>
 
           {/* Desktop Search */}
-          <div className="hidden md:flex flex-1 justify-center max-w-xs mx-4 lg:absolute lg:left-1/2 lg:-translate-x-1/2 lg:max-w-md lg:w-full lg:mx-0 z-10">
+          <div className="hidden md:flex flex-1 justify-center max-w-xs mx-4 lg:absolute lg:inset-x-0 lg:mx-auto lg:w-fit lg:max-w-none z-10">
             <SearchBar />
           </div>
 
