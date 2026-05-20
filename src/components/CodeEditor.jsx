@@ -30,6 +30,36 @@ const CodeEditor = ({
     }
   }
 
+  // NEW: Download functionality
+  const handleDownload = () => {
+    const extensions = {
+      javascript: 'js',
+      python: 'py',
+      cpp: 'cpp',
+      java: 'java',
+      c: 'c',
+    }
+
+    const extension = extensions[language] || 'txt'
+
+    const blob = new Blob([value], {
+      type: 'text/plain',
+    })
+
+    const url = window.URL.createObjectURL(blob)
+
+    const a = document.createElement('a')
+
+    a.href = url
+    a.download = `solution.${extension}`
+
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+
+    window.URL.revokeObjectURL(url)
+  }
+
   const handleEditorChange = (newValue) => {
     setValue(newValue)
     if (onCodeChange) {
@@ -105,6 +135,14 @@ const CodeEditor = ({
                 <span>Copy</span>
               </>
             )}
+          </button>
+
+          {/* NEW: Download Button */}
+          <button
+            onClick={handleDownload}
+            className="px-4 py-2 text-sm font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/50 rounded-xl transition-all duration-300"
+          >
+            Download
           </button>
 
           <button
