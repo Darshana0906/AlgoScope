@@ -1,7 +1,30 @@
 @import 'tailwindcss';
 @import '@clerk/ui/themes/shadcn.css';
 
+:root {
+  --clerk-primary: #8b5cf6;
+  --clerk-text: #ffffff;
+  --clerk-text-secondary: #a1a1aa;
+  --clerk-bg: #0f0f0f;
+  --clerk-border: #27272a;
+  --clerk-input-bg: rgba(15, 23, 42, 0.75);
+  --clerk-input-border: #1e293b;
+  --clerk-input-text: #ffffff;
+  --clerk-input-placeholder: #71717a;
+  --clerk-card-bg: radial-gradient(circle at center, rgba(125, 211, 252, 0.15) 0%, rgba(30, 41, 59, 0.6) 40%, #020617 80%);
+  --clerk-card-shadow: 0 0 40px rgba(56, 189, 248, 0.1);
+  --clerk-footer-bg: transparent;
+  --clerk-footer-bg-solid: #09090b;
+  --clerk-hover-bg: #111827;
+  --clerk-button-bg: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  --clerk-button-hover: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+  --clerk-social-bg: rgba(255, 255, 255, 0.9);
+  --clerk-social-hover: #ffffff;
+  --clerk-font-family: 'JetBrains Mono', monospace;
+}
+
 @layer base {
+
   html,
   body {
     font-family: 'JetBrains Mono', monospace;
@@ -13,4 +36,4 @@
   .logo-font {
     font-family: 'Geist', sans-serif;
   }
-}
+}
