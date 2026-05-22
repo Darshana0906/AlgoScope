@@ -5,33 +5,33 @@ import githubIcon from '../assets/github-mark-white.svg'
 
 const Footer = () => {
   const algorithms = [
-    { 
-      name: 'Sorting', 
-      path: '/sort', 
-      desc: 'Bubble, Merge, Quick & more', 
-      complexity: 'O(N log N)', 
-      color: 'hover:border-cyan-500/30 text-cyan-400 bg-cyan-500/5' 
+    {
+      name: 'Sorting',
+      path: '/sort',
+      desc: 'Bubble, Merge, Quick & more',
+      complexity: 'O(N log N)',
+      color: 'hover:border-cyan-500/30 text-cyan-400 bg-cyan-500/5',
     },
-    { 
-      name: 'Searching', 
-      path: '/search', 
-      desc: 'Binary, Linear, & optimization', 
-      complexity: 'O(log N)', 
-      color: 'hover:border-blue-500/30 text-blue-400 bg-blue-500/5' 
+    {
+      name: 'Searching',
+      path: '/search',
+      desc: 'Binary, Linear, & optimization',
+      complexity: 'O(log N)',
+      color: 'hover:border-blue-500/30 text-blue-400 bg-blue-500/5',
     },
-    { 
-      name: 'Graphs', 
-      path: '/spath', 
-      desc: 'Dijkstra, BFS, DFS pathfinding', 
-      complexity: 'O(V + E)', 
-      color: 'hover:border-purple-500/30 text-purple-400 bg-purple-500/5' 
+    {
+      name: 'Graphs',
+      path: '/spath',
+      desc: 'Dijkstra, BFS, DFS pathfinding',
+      complexity: 'O(V + E)',
+      color: 'hover:border-purple-500/30 text-purple-400 bg-purple-500/5',
     },
-    { 
-      name: 'Arrays', 
-      path: '/ldssearch', 
+    {
+      name: 'Arrays',
+      path: '/ldssearch',
       desc: 'Kadane, Moore, sliding windows', // Fixed typo here
-      complexity: 'O(N)', 
-      color: 'hover:border-emerald-500/30 text-emerald-400 bg-emerald-500/5' 
+      complexity: 'O(N)',
+      color: 'hover:border-emerald-500/30 text-emerald-400 bg-emerald-500/5',
     },
   ]
 
@@ -56,13 +56,17 @@ const Footer = () => {
       </div>
 
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-        
         {/* Box 1: Core Brand Showcase */}
         <div className="lg:col-span-1 bg-white/[0.02] border border-white/[0.05] rounded-xl p-6 flex flex-col justify-between space-y-8">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center p-1.5 border border-white/10 backdrop-blur shadow-inner">
-                <img src="/logo3.png" alt="AlgoScope" className="w-full h-full object-contain" onError={(e) => e.target.style.display = 'none'} />
+                <img
+                  src="/logo3.png"
+                  alt="AlgoScope"
+                  className="w-full h-full object-contain"
+                  onError={(e) => (e.target.style.display = 'none')}
+                />
               </div>
               <div>
                 <h3 className="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent logo-font">
@@ -74,27 +78,55 @@ const Footer = () => {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-cyan-500"></span>
                   </span>
-                  <span className="text-[9px] uppercase font-mono tracking-widest text-cyan-400/80">Telemetry Active</span>
+                  <span className="text-[9px] uppercase font-mono tracking-widest text-cyan-400/80">
+                    Telemetry Active
+                  </span>
                 </div>
               </div>
             </div>
             <p className="text-sm font-light leading-relaxed text-slate-400">
-              Deconstructing complex data structures and algorithm runtime behaviors through smooth, interactive web modules.
+              Deconstructing complex data structures and algorithm runtime
+              behaviors through smooth, interactive web modules.
             </p>
           </div>
 
           <div className="flex items-center justify-between pt-4 border-t border-white/[0.05]">
             <div className="flex gap-2">
-              <motion.a href="https://github.com/algoscope-hq/AlgoScope.git" target="_blank" rel="noreferrer" className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all" whileHover={{ scale: 1.05, y: -2 }}>
-                <img src={githubIcon} alt="GitHub" className="h-4 w-4 opacity-80 invert" />
+              <motion.a
+                href="https://github.com/algoscope-hq/AlgoScope.git"
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all"
+                whileHover={{ scale: 1.05, y: -2 }}
+              >
+                <img
+                  src={githubIcon}
+                  alt="GitHub"
+                  className="h-4 w-4 opacity-80 invert"
+                />
               </motion.a>
-              <motion.a href="https://discord.gg/Yj43j7YV9T" target="_blank" rel="noreferrer" className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-[#5865F2] hover:bg-[#5865F2]/10 hover:border-[#5865F2]/20 transition-all" whileHover={{ scale: 1.05, y: -2 }}>
-                <svg fill="currentColor" viewBox="0 0 24 24" className="h-4 w-4" xmlns="http://www.w3.org/2000/svg">
+              <motion.a
+                href="https://discord.gg/Yj43j7YV9T"
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-[#5865F2] hover:bg-[#5865F2]/10 hover:border-[#5865F2]/20 transition-all"
+                whileHover={{ scale: 1.05, y: -2 }}
+              >
+                <svg
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2758-3.68-.2758-5.4876 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057 13.0276 13.0276 0 01-1.8713-.892.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1971.3728.2914a.077.077 0 01-.0066.1277 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.2259 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.419-2.1569 2.419zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419z" />
                 </svg>
               </motion.a>
             </div>
-            <Link to="/about" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-xs text-slate-400 hover:text-cyan-400 font-medium transition-colors">
+            <Link
+              to="/about"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="text-xs text-slate-400 hover:text-cyan-400 font-medium transition-colors"
+            >
               About Project &rarr;
             </Link>
           </div>
@@ -107,9 +139,9 @@ const Footer = () => {
             const borderHoverClass = algo.color.split(' ')[0]
 
             return (
-              <Link 
-                key={i} 
-                to={algo.path} 
+              <Link
+                key={i}
+                to={algo.path}
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className={`group relative bg-white/[0.01] hover:bg-white/[0.03] border border-white/[0.04] ${borderHoverClass} rounded-xl p-5 flex flex-col justify-between transition-all duration-300 transform hover:-translate-y-0.5`}
               >
@@ -118,7 +150,9 @@ const Footer = () => {
                     <h4 className="text-md font-semibold text-slate-200 group-hover:text-white transition-colors">
                       {algo.name} Module
                     </h4>
-                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded-md border border-white/[0.06] backdrop-blur-sm ${badgeClasses} tracking-wide font-medium shadow-sm transition-all duration-300 group-hover:scale-105`}>
+                    <span
+                      className={`text-[10px] font-mono px-2 py-0.5 rounded-md border border-white/[0.06] backdrop-blur-sm ${badgeClasses} tracking-wide font-medium shadow-sm transition-all duration-300 group-hover:scale-105`}
+                    >
                       {algo.complexity}
                     </span>
                   </div>
@@ -126,27 +160,46 @@ const Footer = () => {
                     {algo.desc}
                   </p>
                 </div>
-                
+
                 <div className="mt-5 flex items-center justify-between text-[10px] uppercase tracking-wider text-slate-600 group-hover:text-cyan-400 font-semibold transition-colors">
                   <span>Launch Visualizer</span>
-                  <span className="text-xs transform group-hover:translate-x-0.5 transition-transform duration-300">&rarr;</span>
+                  <span className="text-xs transform group-hover:translate-x-0.5 transition-transform duration-300">
+                    &rarr;
+                  </span>
                 </div>
               </Link>
             )
           })}
         </div>
-
       </div>
 
       {/* Box 3: Minimalist Bottom Ribbon & Interactive Complexity Counter */}
       <div className="mt-8 pt-6 border-t border-white/[0.04] flex flex-col lg:flex-row justify-between items-center gap-6">
         <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-xs text-slate-500 w-full lg:w-auto justify-between lg:justify-start">
-          <p>&copy; {new Date().getFullYear()} <span className="text-slate-400 font-medium">AlgoScope</span> &bull; Open Source Sandbox</p>
+          <p>
+            &copy; {new Date().getFullYear()}{' '}
+            <span className="text-slate-400 font-medium">AlgoScope</span> &bull;
+            Open Source Sandbox
+          </p>
           <div className="text-[11px] text-slate-600">
             Maintained by{' '}
-            <a className="text-slate-400 hover:text-cyan-400 transition-colors" href="https://github.com/Bimbok" target="_blank" rel="noreferrer">bimbok</a>
+            <a
+              className="text-slate-400 hover:text-cyan-400 transition-colors"
+              href="https://github.com/Bimbok"
+              target="_blank"
+              rel="noreferrer"
+            >
+              bimbok
+            </a>
             {' & '}
-            <a className="text-slate-400 hover:text-purple-400 transition-colors" href="https://github.com/adityapaul26" target="_blank" rel="noreferrer">adityapaul26</a>
+            <a
+              className="text-slate-400 hover:text-purple-400 transition-colors"
+              href="https://github.com/adityapaul26"
+              target="_blank"
+              rel="noreferrer"
+            >
+              adityapaul26
+            </a>
           </div>
         </div>
 
@@ -158,11 +211,11 @@ const Footer = () => {
             <motion.div
               key={index}
               className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.02] border border-white/[0.03] text-slate-400 cursor-help shadow-sm"
-              whileHover={{ 
-                scale: 1.05, 
-                backgroundColor: 'rgba(251, 113, 133, 0.05)', 
+              whileHover={{
+                scale: 1.05,
+                backgroundColor: 'rgba(251, 113, 133, 0.05)',
                 borderColor: 'rgba(251, 113, 133, 0.2)',
-                color: '#fb7185'
+                color: '#fb7185',
               }}
               title={`${metric.label} Growth Rate`}
             >
