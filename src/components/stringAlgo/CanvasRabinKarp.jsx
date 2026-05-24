@@ -11,17 +11,20 @@ function computeHash(str) {
 export const CanvasRabinKarp = ({ text, pattern, speed }) => {
   const [windowIndex, setWindowIndex] = useState(-1)
   const [currentHash, setCurrentHash] = useState(null)
-  const [patternHash] = useState(() => pattern ? computeHash(pattern) : 0)
   const [matches, setMatches] = useState([])
   const [isSpurious, setIsSpurious] = useState(false)
-  const [status, setStatus] = useState('Enter text and pattern, then click Visualize.')
-  const [done, setDone] = useState(false)
+  const [status, setStatus] = useState(
+    'Enter text and pattern, then click Visualize.'
+  )
 
   useEffect(() => {
     if (!text || !pattern) {
-      setWindowIndex(-1); setMatches([]); setDone(false); return
+      setWindowIndex(-1)
+      setMatches([])
+      return
     }
-    const n = text.length, m = pattern.length
+    const n = text.length,
+      m = pattern.length
     const pHash = computeHash(pattern)
     let h = 1
     for (let i = 0; i < m - 1; i++) h = (h * BASE) % PRIME
@@ -35,17 +38,27 @@ export const CanvasRabinKarp = ({ text, pattern, speed }) => {
       const isHashMatch = winHash === pHash
       const isRealMatch = isHashMatch && windowStr === pattern
       if (isRealMatch) foundMatches.push(i)
-      allSteps.push({ i, winHash, isHashMatch, isSpurious: isHashMatch && !isRealMatch, matches: [...foundMatches] })
+      allSteps.push({
+        i,
+        winHash,
+        isHashMatch,
+        isSpurious: isHashMatch && !isRealMatch,
+        matches: [...foundMatches],
+      })
 
       if (i < n - m) {
-        winHash = (BASE * (winHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % PRIME
+        winHash =
+          (BASE * (winHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) %
+          PRIME
         if (winHash < 0) winHash += PRIME
       }
     }
 
     let idx = 0
     const tick = () => {
-      if (idx >= allSteps.length) { setDone(true); return }
+      if (idx >= allSteps.length) {
+        return
+      }
       const step = allSteps[idx]
       setWindowIndex(step.i)
       setCurrentHash(step.winHash)
@@ -83,10 +96,14 @@ export const CanvasRabinKarp = ({ text, pattern, speed }) => {
               {pattern ? computeHash(pattern) : '—'}
             </p>
           </div>
-          <div className={`rounded-xl px-5 py-3 border transition-colors duration-300
-            ${isSpurious ? 'bg-yellow-900/30 border-yellow-500' : 'bg-slate-800/60 border-slate-700'}`}>
+          <div
+            className={`rounded-xl px-5 py-3 border transition-colors duration-300
+            ${isSpurious ? 'bg-yellow-900/30 border-yellow-500' : 'bg-slate-800/60 border-slate-700'}`}
+          >
             <p className="text-slate-400 text-xs">Window Hash</p>
-            <p className={`text-xl font-bold mt-1 font-mono ${isSpurious ? 'text-yellow-400' : 'text-cyan-400'}`}>
+            <p
+              className={`text-xl font-bold mt-1 font-mono ${isSpurious ? 'text-yellow-400' : 'text-cyan-400'}`}
+            >
               {currentHash !== null ? currentHash : '—'}
             </p>
           </div>
@@ -95,24 +112,31 @@ export const CanvasRabinKarp = ({ text, pattern, speed }) => {
         {/* Text with sliding window */}
         {text && (
           <div>
-            <p className="text-xs text-slate-500 uppercase tracking-widest mb-2">Text (sliding window)</p>
+            <p className="text-xs text-slate-500 uppercase tracking-widest mb-2">
+              Text (sliding window)
+            </p>
             <div className="flex flex-wrap gap-2">
               {text.split('').map((ch, i) => {
-                const inWindow = windowIndex >= 0 && i >= windowIndex && i < windowIndex + m
-                const inMatch = matches.some((mIdx) => i >= mIdx && i < mIdx + m)
+                const inWindow =
+                  windowIndex >= 0 && i >= windowIndex && i < windowIndex + m
+                const inMatch = matches.some(
+                  (mIdx) => i >= mIdx && i < mIdx + m
+                )
                 return (
                   <div
                     key={i}
                     className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold border-2 transition-all duration-300
-                      ${inWindow
-                        ? isSpurious
-                          ? 'bg-yellow-500/60 border-yellow-400 text-white scale-105'
-                          : matches[matches.length - 1] === windowIndex && inMatch
-                            ? 'bg-emerald-500 border-white text-black scale-110'
-                            : 'bg-cyan-500/60 border-cyan-400 text-white scale-105'
-                        : inMatch
-                          ? 'bg-emerald-500/30 border-emerald-400 text-white'
-                          : 'bg-slate-800 border-slate-700 text-slate-300'
+                      ${
+                        inWindow
+                          ? isSpurious
+                            ? 'bg-yellow-500/60 border-yellow-400 text-white scale-105'
+                            : matches[matches.length - 1] === windowIndex &&
+                                inMatch
+                              ? 'bg-emerald-500 border-white text-black scale-110'
+                              : 'bg-cyan-500/60 border-cyan-400 text-white scale-105'
+                          : inMatch
+                            ? 'bg-emerald-500/30 border-emerald-400 text-white'
+                            : 'bg-slate-800 border-slate-700 text-slate-300'
                       }`}
                   >
                     {ch}
@@ -127,7 +151,9 @@ export const CanvasRabinKarp = ({ text, pattern, speed }) => {
         <div className="mt-auto pt-4 border-t border-white/10 flex gap-4">
           <div className="bg-slate-800/60 rounded-xl px-5 py-3 border border-slate-700">
             <p className="text-slate-400 text-xs">Matches</p>
-            <p className="text-2xl font-bold text-emerald-400 mt-1">{matches.length}</p>
+            <p className="text-2xl font-bold text-emerald-400 mt-1">
+              {matches.length}
+            </p>
           </div>
           <div className="bg-slate-800/60 rounded-xl px-5 py-3 border border-slate-700">
             <p className="text-slate-400 text-xs">Positions</p>
@@ -138,7 +164,9 @@ export const CanvasRabinKarp = ({ text, pattern, speed }) => {
           {isSpurious && (
             <div className="bg-yellow-900/20 rounded-xl px-5 py-3 border border-yellow-700">
               <p className="text-yellow-400 text-xs">⚠ Spurious Hit</p>
-              <p className="text-xs text-slate-300 mt-1">Hash matched, string did not</p>
+              <p className="text-xs text-slate-300 mt-1">
+                Hash matched, string did not
+              </p>
             </div>
           )}
         </div>

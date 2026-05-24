@@ -8,12 +8,12 @@ import { MenuSetStringAlgo } from './MenuSetStringAlgo'
 import { CanvasKMP } from './CanvasKMP'
 import { CanvasRabinKarp } from './CanvasRabinKarp'
 import { CanvasZAlgorithm } from './CanvasZAlgorithm'
-import CompareMode from './CompareMode'                          // ← new
+import CompareMode from './CompareMode' // ← new
 import { stringSources } from '../../algorithms/stringAlgo/stringSources'
 
 const DEFAULTS = {
-  kmp:        { text: 'AABAACAADAABAABA', pattern: 'AABA' },
-  rabinkarp:  { text: 'ABCCDABCDABDC',    pattern: 'ABCD' },
+  kmp: { text: 'AABAACAADAABAABA', pattern: 'AABA' },
+  rabinkarp: { text: 'ABCCDABCDABDC', pattern: 'ABCD' },
   zalgorithm: { text: 'AABXAABXCAABXAABXAY', pattern: 'AABX' },
 }
 
@@ -54,11 +54,17 @@ function SoloMode() {
   }
 
   const currentSource = useMemo(
-    () => stringSources?.[algorithm]?.[language]?.code || '// No implementation available',
+    () =>
+      stringSources?.[algorithm]?.[language]?.code ||
+      '// No implementation available',
     [algorithm, language]
   )
 
-  const CanvasComponent = { kmp: CanvasKMP, rabinkarp: CanvasRabinKarp, zalgorithm: CanvasZAlgorithm }[algorithm]
+  const CanvasComponent = {
+    kmp: CanvasKMP,
+    rabinkarp: CanvasRabinKarp,
+    zalgorithm: CanvasZAlgorithm,
+  }[algorithm]
 
   return (
     <motion.div
@@ -109,8 +115,16 @@ function SoloMode() {
 
       {/* Canvas */}
       <div className="w-full lg:w-3/4 xl:w-4/5 mt-4 lg:mt-0 lg:ml-6 flex flex-col gap-6">
-        <CanvasComponent text={activeText} pattern={activePattern} speed={speed} />
-        <CodePanel title={TITLES[algorithm]} code={currentSource} language={language} />
+        <CanvasComponent
+          text={activeText}
+          pattern={activePattern}
+          speed={speed}
+        />
+        <CodePanel
+          title={TITLES[algorithm]}
+          code={currentSource}
+          language={language}
+        />
       </div>
     </motion.div>
   )
@@ -142,7 +156,10 @@ export default function VisualizerPage() {
 
         <div
           className="flex rounded-xl p-1 gap-1 self-start sm:self-auto"
-          style={{ background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(51,65,85,0.6)' }}
+          style={{
+            background: 'rgba(15,23,42,0.8)',
+            border: '1px solid rgba(51,65,85,0.6)',
+          }}
         >
           {['solo', 'compare'].map((tab) => (
             <button
@@ -155,7 +172,10 @@ export default function VisualizerPage() {
                 <motion.div
                   layoutId="string-tab-bg"
                   className="absolute inset-0 rounded-lg"
-                  style={{ background: 'rgba(6,182,212,0.2)', border: '1px solid rgba(6,182,212,0.4)' }}
+                  style={{
+                    background: 'rgba(6,182,212,0.2)',
+                    border: '1px solid rgba(6,182,212,0.4)',
+                  }}
                   transition={{ type: 'spring', bounce: 0.2, duration: 0.4 }}
                 />
               )}
@@ -165,7 +185,10 @@ export default function VisualizerPage() {
               {tab === 'compare' && (
                 <span
                   className="relative text-[9px] font-bold px-1.5 py-0.5 rounded-md"
-                  style={{ background: 'rgba(6,182,212,0.25)', color: '#22d3ee' }}
+                  style={{
+                    background: 'rgba(6,182,212,0.25)',
+                    color: '#22d3ee',
+                  }}
                 >
                   NEW
                 </span>
@@ -177,11 +200,23 @@ export default function VisualizerPage() {
 
       <AnimatePresence mode="wait">
         {activeTab === 'solo' ? (
-          <motion.div key="solo" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.22 }}>
+          <motion.div
+            key="solo"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 10 }}
+            transition={{ duration: 0.22 }}
+          >
             <SoloMode />
           </motion.div>
         ) : (
-          <motion.div key="compare" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.22 }}>
+          <motion.div
+            key="compare"
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.22 }}
+          >
             <CompareMode />
           </motion.div>
         )}

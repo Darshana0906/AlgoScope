@@ -75,7 +75,8 @@ const ALGORITHMS = [
   },
   {
     title: 'String Algorithms',
-    description: 'KMP, Rabin-Karp, and Z-Algorithm — pattern matching visualized step by step.',
+    description:
+      'KMP, Rabin-Karp, and Z-Algorithm — pattern matching visualized step by step.',
     color: 'theme-card border-violet-500/30 hover:border-violet-400',
     link: '/string-algorithms',
   },
