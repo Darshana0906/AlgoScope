@@ -193,10 +193,10 @@ const Footer = () => {
             </a>
             {' & '}
             <a
-               target="_blank"className="font-semibold text-cyan-400 transition hover:text-cyan-300"
+              target="_blank"
+              className="font-semibold text-cyan-400 transition hover:text-cyan-300"
               href="https://github.com/adityapaul26"
-             
-              rel="noreferrer"
+             rel="noreferrer"
             >
               adityapaul26
             </a>
