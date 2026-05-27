@@ -6,6 +6,7 @@ import { useStepPlayback } from '../visualizer/useStepPlayback'
 import ComplexityCard from '../ComplexityCard'
 import Tooltip from '../Tooltip'
 import TestCaseManager from '../testCaseManager/TestCaseManager'
+import RecursiveTree from './RecursiveTree.jsx'
 
 import * as bubble from '../../algorithms/sorting/bubbleSortSteps'
 import * as selection from '../../algorithms/sorting/selectionSortSteps'
@@ -324,6 +325,7 @@ export default function Visualizer() {
     clearPlayback()
     setSearchParams(newAlgo ? { algo: newAlgo } : {})
   }
+  
 
   return (
     <div className="flex flex-col p-2 sm:p-4 lg:p-5">
@@ -720,6 +722,13 @@ export default function Visualizer() {
                   </div>
                 </div>
               )}
+              {selectedAlgorithm === 'merge' && (
+  <RecursiveTree
+    tree={currentStep?.recursionTree}
+    activeNode={currentStep?.activeNode}
+  />
+)}
+
             </div>
           </div>
         </div>
