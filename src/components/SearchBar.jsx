@@ -304,7 +304,7 @@ const ALGORITHMS = [
     id: 'fft',
     name: 'Fast Fourier Transform',
     category: 'Math Theory',
-    route: '/math-theory?algo=fft',
+    route: '/math-theory?algo=fft', 
   },
   // Games & Challenges
   {
