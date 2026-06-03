@@ -83,7 +83,8 @@ const ALGORITHMS = [
   },
   {
     title: 'DP Optimization Journey',
-    description: 'Visualize the progression from Recursion to Space Optimization.',
+    description:
+      'Visualize the progression from Recursion to Space Optimization.',
     color: 'theme-card border-rose-500/30 hover:border-rose-400',
     link: '/dp-journey',
   },
