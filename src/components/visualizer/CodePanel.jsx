@@ -15,14 +15,10 @@ const CodePanel = memo(function CodePanel({
   const { isDark } = useContext(ThemeContext)
 
   const defaultLightTheme = 'materialLight'
-
-  // Initialize syntax theme to match app theme (dark vs light).
-  const [theme, setTheme] = useState(() =>
-    isDark ? 'vscDarkPlus' : defaultLightTheme
-  )
-  const userChangedThemeRef = useRef(false)
+  const [manualTheme, setManualTheme] = useState(null)
   const [copied, setCopied] = useState(false)
 
+  const theme = manualTheme ?? (isDark ? 'vscDarkPlus' : defaultLightTheme)
   const activeTheme = themes[theme] ?? themes.vscDarkPlus
 
   useEffect(() => {
@@ -63,11 +59,6 @@ const CodePanel = memo(function CodePanel({
       window.clearTimeout(timeoutId)
     }
   }, [copied])
-
-  useEffect(() => {
-    if (userChangedThemeRef.current) return
-    setTheme(isDark ? 'vscDarkPlus' : 'prism')
-  }, [isDark])
 
   const handleCopy = async () => {
     try {
@@ -171,8 +162,7 @@ const CodePanel = memo(function CodePanel({
               <select
                 value={theme}
                 onChange={(event) => {
-                  userChangedThemeRef.current = true
-                  setTheme(event.target.value)
+                  setManualTheme(event.target.value)
                 }}
                 className="h-10 min-w-[140px] rounded-xl border border-slate-700 bg-slate-900 px-3 text-sm text-slate-100 transition focus:border-cyan-500 focus:outline-none"
               >

@@ -385,14 +385,3 @@
   color: #a78bfa !important; /* Lighter purple on hover */
 }
 
-/* Ensure code blocks remain readable in Light Mode */
-:root[data-theme='light'] .react-syntax-highlighter,
-:root[data-theme='light'] pre,
-:root[data-theme='light'] code {
-  background: rgba(15, 23, 42, 0.94) !important;
-  color: #f8fafc !important;
-}
-
-:root[data-theme='light'] .react-syntax-highlighter .token {
-  color: inherit !important;
-}
