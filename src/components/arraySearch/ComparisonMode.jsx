@@ -199,9 +199,7 @@ function SearchPanel({
               style={{ transitionDuration: '220ms' }}
             >
               <span className="text-[8px] text-slate-600 font-mono">{idx}</span>
-              <span className={getElemClass(idx)}>
-                {val}
-              </span>
+              <span className={getElemClass(idx)}>{val}</span>
             </div>
           ))}
         </div>
