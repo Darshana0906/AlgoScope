@@ -109,6 +109,7 @@ const algorithmLinks = [
   { name: 'Practice Sandbox', href: '/practice' },
   { name: 'Guess the Algorithm', href: '/challenge' },
   { name: 'DP Optimization Journey', href: '/dp-journey' },
+  { name: 'Sliding Window', href: '/sliding-window' }
 ]
 
 export const Navbar = () => {

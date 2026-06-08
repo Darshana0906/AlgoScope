@@ -95,6 +95,13 @@ const ALGORITHMS = [
     color: 'theme-card border-rose-500/30 hover:border-rose-400',
     link: '/backtracking',
   },
+  {
+    title: 'Sliding Window',
+    description:
+      'Visualize the sliding window algorithm use to optimally solve problems on substrings and subarrays.',
+    color: 'theme-card border-rose-500/30 hover:border-rose-400',
+    link: '/sliding-window',
+  },
 ]
 
 export const Home = () => {
