@@ -2,10 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { MoveUpRight } from 'lucide-react'
-import {
-  isFavoriteId,
-  subscribeFavoritesChange,
-} from '../lib/favorites'
+import { isFavoriteId, subscribeFavoritesChange } from '../lib/favorites'
 import DifficultyBadge from './DifficultyBadge'
 
 const MotionDiv = motion.div
@@ -65,7 +62,14 @@ export default function AlgoCard({
     e.stopPropagation()
 
     const saved = JSON.parse(localStorage.getItem('algo-favorites')) || []
-    const algorithm = { id: algoId, title, link, description, color, difficulty }
+    const algorithm = {
+      id: algoId,
+      title,
+      link,
+      description,
+      color,
+      difficulty,
+    }
     const exists = saved.some((item) => item.id === algorithm.id)
 
     let updatedFavorites
