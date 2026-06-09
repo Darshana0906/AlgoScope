@@ -136,7 +136,7 @@ const runDijkstra = (currentGrid, startPos, endPos) => {
   return { order, parent, distances }
 }
 
-const runBellmanFord = (currentGrid, startPos, endPos) => {
+const runBellmanFord = (currentGrid, startPos, _endPos) => {
   const startNode = currentGrid[startPos.row][startPos.col]
   const dists = {}
   const parent = {}
